@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Query, Req, Res, UseFilters, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Query, Req, Request, Res, UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { throws } from 'assert';
-import { Response,Request } from 'express';
+import { Response } from 'express';
+import { JwtGuard } from 'src/auth/guard/jwt.guard';
 import { ValidationPipe } from 'src/pipes/student.pipes';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { StudentInterface } from '../models/student.interface';
@@ -14,9 +15,10 @@ export class StudentController {
 
 
     // method create new student 
+    @UseGuards(JwtGuard)
     @Post()
-   async create(
-        @Body() student:StudentInterface,
+    async create(
+        @Body() student:StudentInterface,@Request() req
         ) :Promise<InsertResult>{
         if(student.name.match(/^\d/)) {
             throw new HttpException('name is not start with number', HttpStatus.NOT_ACCEPTABLE);
@@ -25,7 +27,7 @@ export class StudentController {
             throw new HttpException('name have to length > 6', HttpStatus.NOT_ACCEPTABLE);
         }
         else{
-            const newStudent  = await this.studentService.createPost(student)
+            const newStudent  = await this.studentService.createPost(req.user,student)
             return newStudent.raw[0]
         }
     }   

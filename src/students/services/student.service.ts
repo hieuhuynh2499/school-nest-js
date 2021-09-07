@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/auth/models/user.interface';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { StudentEntity } from '../models/student.entity';
 import { StudentInterface } from '../models/student.interface';
@@ -13,20 +14,18 @@ export class StudentService {
     ) {}
 
     // insert one entity in database 
-    createPost(student:StudentInterface):Promise<InsertResult>{
+    createPost(user: User,student:StudentInterface):Promise<InsertResult>{
         // this.StudentRepository.save(feedPost)
         // return feedPost
+        student.teacher = user
         const studentNew = this.StudentRepository.insert(student)
         return studentNew
     }
-
 
     // select student by 
     async findOneStudent (id):Promise<StudentInterface>{
         return await this.StudentRepository.findOne(id)
     }
-
-
 
     async findAllStudents ():Promise<StudentInterface[]>{
         // const student =  this.StudentRepository.query(`select * from student`)

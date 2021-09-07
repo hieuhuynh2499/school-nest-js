@@ -1,4 +1,4 @@
-import { TeacherEntity } from 'src/teachers/models/teacher.entity';
+import { UserEntity } from 'src/auth/models/user.entity';
 import {Column,CreateDateColumn,Entity,ManyToOne,PrimaryGeneratedColumn} from 'typeorm'
 
 @Entity('student')
@@ -17,7 +17,8 @@ export class StudentEntity{
     @CreateDateColumn()
     createAt:Date;
 
-    // @ManyToOne(() => TeacherEntity, (teacherEntity) => teacherEntity.students)
-    // author:TeacherEntity;
+
+    @ManyToOne(() => UserEntity, (teacherEntity) => teacherEntity.students)
+    teacher:UserEntity;
 
 }
